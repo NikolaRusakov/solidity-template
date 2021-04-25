@@ -1,5 +1,6 @@
 import "@nomiclabs/hardhat-waffle";
 import "@typechain/hardhat";
+import "hardhat-gas-reporter";
 import "solidity-coverage";
 
 import "./tasks/accounts";
@@ -54,6 +55,12 @@ function createTestnetConfig(network: keyof typeof chainIds): NetworkUserConfig 
 
 const config: HardhatUserConfig = {
   defaultNetwork: "hardhat",
+  gasReporter: {
+    currency: "USD",
+    enabled: process.env.REPORT_GAS ? true : false,
+    excludeContracts: [],
+    src: "./contracts",
+  },
   networks: {
     hardhat: {
       accounts: {
@@ -73,18 +80,18 @@ const config: HardhatUserConfig = {
     tests: "./test",
   },
   solidity: {
-    version: "0.8.1",
+    version: "0.8.3",
     settings: {
       metadata: {
-        // Do not include the metadata hash, since this is machine dependent and we want
-        // all generated code to be deterministic.
-        // https://docs.soliditylang.org/en/v0.7.6/metadata.html
+        // Not including the metadata hash
+        // https://github.com/paulrberg/solidity-template/issues/31
         bytecodeHash: "none",
       },
+      // You should disable the optimizer when debugging
       // https://hardhat.org/hardhat-network/#solidity-optimizer-support
       optimizer: {
         enabled: true,
-        runs: 200,
+        runs: 800,
       },
     },
   },
